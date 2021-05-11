@@ -87,7 +87,7 @@ check_libbpf()
 {
     local libbpf_err
 
-    if [ "${FORCE_SUBMODULE_LIBBPF:-0}" -ne "1" ] && ${PKG_CONFIG} libbpf --exists || [ -n "$LIBBPF_DIR" ]; then
+    if [ "${FORCE_SUBDIR_LIBBPF:-0}" -ne "1" ] && ${PKG_CONFIG} libbpf --exists || [ -n "$LIBBPF_DIR" ]; then
 
         if [ -n "$LIBBPF_DIR" ]; then
             LIBBPF_CFLAGS="-I${LIBBPF_DIR}/include -L${LIBBPF_DIR}/lib"
@@ -134,12 +134,11 @@ EOF
 
     echo submodule
     echo "SYSTEM_LIBBPF:=n" >> $CONFIG
-    echo 'CFLAGS += -I$(LIB_DIR)/libbpf-install/usr/include' >>$CONFIG
-    echo 'BPF_CFLAGS += -I$(LIB_DIR)/libbpf-install/usr/include' >>$CONFIG
-    echo 'LDFLAGS += -L$(LIB_DIR)/libbpf/src' >>$CONFIG
+    echo 'CFLAGS += -I$(LIB_DIR)/xdp-tools/lib/libbpf/src/root' >>$CONFIG
+    echo 'BPF_CFLAGS += -I$(LIB_DIR)/xdp-tools/lib/libbpf/src/root' >>$CONFIG
+    echo 'LDFLAGS += -L$(LIB_DIR)/xdp-tools/lib/libbpf/src' >>$CONFIG
     echo 'LDLIBS += -l:libbpf.a' >>$CONFIG
-    echo 'OBJECT_LIBBPF = $(LIB_DIR)/libbpf/src/libbpf.a' >>$CONFIG
-    if ! [ -d "lib/libbpf/src" ] && [ -f ".gitmodules" ] && [ -e ".git" ]; then
+    if ! [ -d "lib/xdp-tools/lib" ] && [ -f ".gitmodules" ] && [ -e ".git" ]; then
         git submodule init && git submodule update
     fi
 

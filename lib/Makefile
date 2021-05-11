@@ -6,41 +6,20 @@ include defines.mk
 
 SUBDIRS=
 
-all: $(OBJECT_LIBBPF)
+all: xdp_tools_lib
 	@set -e; \
 	for i in $(SUBDIRS); \
 	do echo; echo "  $$i"; $(MAKE) -C $$i; done
 
-.PHONY: clean
-clean: libbpf_clean
+xdp_tools_lib:
+	@set -e; \
+	echo; echo "  xdp-tools"; $(MAKE) -C xdp-tools lib
+
+
+.PHONY: clean xdp_tools_clean
+clean: xdp_tools_clean
 	@for i in $(SUBDIRS); \
 	do $(MAKE) -C $$i clean; done
 
-libbpf: $(OBJECT_LIBBPF)
-
-# Handle libbpf as git submodule
-ifeq ($(SYSTEM_LIBBPF),n)
-ifeq ($(VERBOSE),0)
-P:= >/dev/null
-endif
-
-# Detect submodule libbpf source file changes
-LIBBPF_SOURCES := $(wildcard libbpf/src/*.[ch])
-LIBBPF_INSTALL := libbpf-install
-INSTDIR=../../$(LIBBPF_INSTALL)
-
-.PHONY: libbpf_clean
-libbpf/src/libbpf.a: $(LIBBPF_SOURCES)
-	@echo ; echo "  libbpf"
-	$(QUIET_CC)$(MAKE) -C libbpf/src CFLAGS="$(LIBBPF_CFLAGS)" $P
-	$(QUIET_INSTALL)$(MAKE) -C libbpf/src DESTDIR=$(INSTDIR) install_headers $P
-
-libbpf_clean:
-	$(Q)$(MAKE) -C libbpf/src clean $P
-	$(Q)$(RM) -r $(LIBBPF_INSTALL)
-
-else
-
-libbpf_clean:
-	@echo -n
-endif
+xdp_tools_clean:
+	@$(MAKE) -C xdp-tools clean

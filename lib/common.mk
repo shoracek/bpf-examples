@@ -28,11 +28,6 @@ LIB_OBJS += $(foreach obj,$(UTIL_OBJS),$(LIB_DIR)/util/$(obj))
 EXTRA_DEPS +=
 EXTRA_USER_DEPS +=
 
-# Detect submodule libbpf source file changes
-ifeq ($(SYSTEM_LIBBPF),n)
-	LIBBPF_SOURCES := $(wildcard $(LIBBPF_DIR)/src/*.[ch])
-endif
-
 # BPF-prog kern and userspace shares struct via header file:
 KERN_USER_H ?= $(wildcard common_kern_user.h)
 
@@ -47,9 +42,6 @@ all: $(USER_TARGETS) $(BPF_OBJ) $(EXTRA_TARGETS)
 clean::
 	$(Q)rm -f $(USER_TARGETS) $(BPF_OBJ) $(USER_OBJ) $(USER_GEN) *.ll
 
-$(OBJECT_LIBBPF): $(LIBBPF_SOURCES)
-	$(Q)$(MAKE) -C $(LIB_DIR) libbpf
-
 $(CONFIGMK):
 	$(Q)$(MAKE) -C $(LIB_DIR)/.. config.mk
 
@@ -60,7 +52,7 @@ LIB_H := ${LIB_OBJS:.o=.h}
 $(LIB_OBJS): %.o: %.c %.h $(LIB_H)
 	$(Q)$(MAKE) -C $(dir $@) $(notdir $@)
 
-$(USER_TARGETS): %: %.c  $(OBJECT_LIBBPF) $(OBJECT_LIBXDP) $(LIBMK) $(LIB_OBJS) $(KERN_USER_H) $(EXTRA_DEPS) $(EXTRA_USER_DEPS)
+$(USER_TARGETS): %: %.c $(LIBMK) $(LIB_OBJS) $(KERN_USER_H) $(EXTRA_DEPS) $(EXTRA_USER_DEPS)
 	$(QUIET_CC)$(CC) -Wall $(CFLAGS) $(LDFLAGS) -o $@ $(LIB_OBJS) \
 	 $< $(LDLIBS)
 
