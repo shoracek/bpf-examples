@@ -16,11 +16,6 @@ clean: libbpf_clean
 	@for i in $(SUBDIRS); \
 	do $(MAKE) -C $$i clean; done
 
-install:
-	install -m 0755 -d $(DESTDIR)$(HDRDIR)
-	$(MAKE) -C libxdp install
-	$(MAKE) -C testing install
-
 libbpf: $(OBJECT_LIBBPF)
 
 # Handle libbpf as git submodule

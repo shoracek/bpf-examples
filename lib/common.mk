@@ -75,13 +75,3 @@ $(BPF_OBJ): %.o: %.c $(KERN_USER_H) $(EXTRA_DEPS) $(BPF_HEADERS) $(LIBMK)
 	    -Wno-compare-distinct-pointer-types \
 	    -O2 -emit-llvm -c -g -o ${@:.o=.ll} $<
 	$(QUIET_LLC)$(LLC) -march=bpf -filetype=obj -o $@ ${@:.o=.ll}
-
-
-.PHONY: test
-ifeq ($(TEST_FILE),)
-test:
-	@echo "    No tests defined"
-else
-test: all
-	$(Q)$(TEST_DIR)/test_runner.sh $(TEST_FILE)
-endif
