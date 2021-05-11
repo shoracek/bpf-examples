@@ -83,6 +83,25 @@ check_zlib()
     fi
 }
 
+
+check_libxdp()
+{
+    echo submodule
+    echo "SYSTEM_LIBXDP:=n" >>$CONFIG
+    echo 'CFLAGS += -I$(LIB_DIR)/xdp-tools/headers' >>$CONFIG
+    echo 'LDFLAGS += -L$(LIB_DIR)/xdp-tools/lib/libxdp' >>$CONFIG
+    echo 'LDLIBS += -l:libxdp.a' >>$CONFIG
+    if ! [ -d "lib/xdp-tools/lib" ] && [ -f ".gitmodules" ] && [ -e ".git" ]; then
+        git submodule init && git submodule update
+    fi
+
+    echo -n "ELF support: "
+    check_elf || exit 1
+
+    echo -n "zlib support: "
+    check_zlib || exit 1
+}
+
 check_libbpf()
 {
     local libbpf_err
@@ -141,12 +160,6 @@ EOF
     if ! [ -d "lib/xdp-tools/lib" ] && [ -f ".gitmodules" ] && [ -e ".git" ]; then
         git submodule init && git submodule update
     fi
-
-    echo -n "ELF support: "
-    check_elf || exit 1
-
-    echo -n "zlib support: "
-    check_zlib || exit 1
 
     # For the build submodule library we know it does support this API, so we
     # hard code it. Also due to the fact it's hard to build a test app as
@@ -216,6 +229,9 @@ echo "# Generated config" >$CONFIG
 quiet_config >> $CONFIG
 
 check_toolchain
+
+echo -n "libxdp support: "
+check_libxdp
 
 echo -n "libbpf support: "
 check_libbpf
