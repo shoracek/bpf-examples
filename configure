@@ -193,8 +193,8 @@ EOF
     echo "submodule v$LIBBPF_VERSION"
     echo "SYSTEM_LIBBPF:=n" >> $CONFIG
     echo "LIBBPF_VERSION=$LIBBPF_VERSION" >>$CONFIG
-    echo 'CFLAGS += -I$(LIB_DIR)/xdp-tools/lib/libbpf/src/root' >>$CONFIG
-    echo 'BPF_CFLAGS += -I$(LIB_DIR)/xdp-tools/lib/libbpf/src/root' >>$CONFIG
+    echo 'CFLAGS += -I$(LIB_DIR)/xdp-tools/lib/libbpf/src/root/usr/include' >>$CONFIG
+    echo 'BPF_CFLAGS += -I$(LIB_DIR)/xdp-tools/lib/libbpf/src/root/usr/include' >>$CONFIG
     echo 'LDFLAGS += -L$(LIB_DIR)/xdp-tools/lib/libbpf/src' >>$CONFIG
     echo 'LDLIBS += -l:libbpf.a' >>$CONFIG
     if ! [ -d "lib/xdp-tools/lib" ] && [ -f ".gitmodules" ] && [ -e ".git" ]; then
