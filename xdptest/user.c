@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <bpf/libbpf.h>
 #include <xdp/libxdp.h>
 
 int detach(int ifindex)
