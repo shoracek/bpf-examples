@@ -107,6 +107,7 @@ check_libxdp()
     echo submodule
     echo "SYSTEM_LIBXDP:=n" >>$CONFIG
     echo 'CFLAGS += -I$(LIB_DIR)/xdp-tools/headers' >>$CONFIG
+    echo 'BPF_CFLAGS += -I$(LIB_DIR)/xdp-tools/headers' >>$CONFIG
     echo 'LDFLAGS += -L$(LIB_DIR)/xdp-tools/lib/libxdp' >>$CONFIG
     echo 'LDLIBS += -l:libxdp.a' >>$CONFIG
     if ! [ -d "lib/xdp-tools/lib" ] && [ -f ".gitmodules" ] && [ -e ".git" ]; then
